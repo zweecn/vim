@@ -1,0 +1,8 @@
+My VIM config.
+
+cd ~/
+mkdir .vim
+cp * ~/.vim
+cp ~/.vim/vimrc /etc/vimrc
+
+
