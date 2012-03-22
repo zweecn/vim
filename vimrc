@@ -97,10 +97,10 @@ if has("autocmd")
   autocmd BufNewFile alltests.py 0r ~/.vim/skeleton/alltests.py
   autocmd BufNewFile *.py 0r ~/.vim/skeleton/skeleton.py
  " 自动应用C模板 
-  autocmd BufNewFile *.c 0r ~/.vim/skeleton/c_model.c
-  autocmd BufNewFile *.cpp 0r ~/.vim/skeleton/c_model.cpp
-  autocmd BufNewFile *.java 0r ~/.vim/skeleton/c_model.java
-  autocmd BufNewFile *.h 0r ~/.vim/skeleton/c_model.h
+  autocmd BufNewFile *.c 0r ~/.vim/skeleton/model.c
+  autocmd BufNewFile *.cpp 0r ~/.vim/skeleton/model.cpp
+  autocmd BufNewFile *.java 0r ~/.vim/skeleton/model.java
+  autocmd BufNewFile *.h 0r ~/.vim/skeleton/model.h
   " python自动补全
   autocmd FileType python set complete+=k~/.vim/tools/pydiction.py 
 endif
