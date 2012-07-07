@@ -13,9 +13,12 @@ alias la='ls -a'
 alias c='clear'
 alias q='exit'
 alias ms='chmod 744'
+alias relaylogin='ssh zhengwei04@relay01.baidu.com'
+alias testlogin='ssh img@cq01-news-rdtest01.vm.baidu.com'
 
 export PATH=$PATH$:.
 export t1=img@cq01-news-rdtest01.vm.baidu.com
+export r1=zhengwei04@relay01.baidu.com
 
 mkdir -p ~/.trash
 alias rm=trash
