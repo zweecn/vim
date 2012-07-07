@@ -1,8 +1,8 @@
 /*
  * FileName:
  *
- * Author: Zhengwei
- * Last modified: Thu Mar 22 19:32:19 2012 [Zwee-Pro]
+ * Author: Zhengwei04
+ * Last modified: Fri 06 Jul 2012 01:38:52 PM CST [tc-yueying.tc.baidu.com]
  */
 
 #include <stdio.h>
