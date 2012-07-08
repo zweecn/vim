@@ -213,3 +213,5 @@ let g:SuperTabDefaultCompletionType="<C-X><C-O>"
 """"""""""""""""""""""""""""""
 "let g:NeoComplCache_EnableAtStartup = 1
 "=========================================================================
+
+colorscheme desert
