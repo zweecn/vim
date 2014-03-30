@@ -286,9 +286,9 @@ nmap <C-_>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
 nmap <C-_>d :cs find d <C-R>=expand("<cword>")<CR><CR>
 
 " VIM支持多种文本折叠方式，我VIM多用于编码，所以选择符合编程语言语法的代码折叠方式。
-set foldmethod=syntax
+" set foldmethod=syntax
 " 启动vim时打开所有折叠代码。
-set nofen
+" set nofen
 
 "F3全工程内搜索匹配字符串
 "nnoremap <silent> <F3> :Grep<CR>
