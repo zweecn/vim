@@ -57,7 +57,6 @@ endif
 set backspace=indent,eol,start
 set nocompatible
 set encoding=utf-8
-set fenc=utf-8
 set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
 set termencoding=utf-8
 set fileformats=unix
@@ -78,6 +77,45 @@ else
 endif
 set incsearch
 set hlsearch
+
+let curpwd = getcwd()
+" vim自身命令行模式智能补全
+set wildmenu
+
+" 定义快捷键的前缀，即<Leader>
+let mapleader=";"
+
+" 定义快捷键 跳转到当前行的行首
+" nmap lg 0
+" 定义快捷键 跳转到当前行的行尾
+" nmap le $
+" 定义快捷键 关闭当前分割窗口
+nmap <Leader>q :q<CR>
+" 定义快捷键 保持当前窗口内容
+nmap <Leader>w :w<CR>
+" 设置快捷键 将选中文本块复制至系统剪贴板 系统剪贴板是+
+vnoremap <Leader>y "+y
+" 设置快捷键 将系统剪贴板内容粘贴至vim
+nmap <Leader>p "+p
+" 设置快捷键 进行工程编译及链接，并同时在quickfix输出make结果
+" 前提是工程目录中有Makefile文件
+nmap <Leader>m :wa<CR>:make<CR>:bot cw<CR><CR>
+
+" 定义快捷键 跳转到光标所在关键词的定义处
+nmap <Leader>gt <C-]>
+" 定义快捷键 跳回原关键词 与 ;gr 配合使用
+nmap <Leader>gr <C-T>
+" 定义快捷键 跳到当前屏幕倒数第二行
+nmap <Leader>gf <C-f>
+" 定义快捷键 跳到当前屏幕第二行
+nmap <Leader>gb <C-b>
+"快速切换C H源文件
+nmap <Leader>cd :A<CR>
+" 使用Grep.vim插件在工程内全局查找，设置快捷键。快捷键速记法：search in project
+nnoremap <Leader>sp :Grep<CR>
+" 设置快捷键gs遍历各分割窗口。快捷键速记法：goto the next spilt window
+nnoremap <Leader>gs <C-W><C-W>
+
 "==========================================================================
 " 以下是设置自动应用模板,并插入时间
 if has("autocmd")
@@ -104,32 +142,32 @@ if has("autocmd")
   " python自动补全
   autocmd FileType python set complete+=k~/.vim/tools/pydiction.py 
 endif
-""""""""""""""""""""""""""
-" 插入系统日期
-""""""""""""""""""""""""""
-map <F5> :r !date +\%c<CR>
-" 函数，修改文件头部的最后修改时间，就象这个文件的头部一样
-function! LastMod()
-  if line("$") > 10
-    let l = 10
-  else
-    let l = line("$")
-  endif
-  exe "1," . l . "s/[Ll]ast [Mm]odified: .*/Last modified: " . strftime("%c") . " [" . hostname() . "]/e"
-endfunction
-
-" 手工更新文件最后修改时间
-map ,L :call LastMod()<CR>
-
-" Edit "Last modified"-comment in the top 5 lines of config files
-" 自动更新文件修改时间
-if has("autocmd")
-  augroup lastmod
-    autocmd!
-    autocmd BufWritePre,FileWritePre * exec("normal ms")|call LastMod()|exec("normal `s")
-  augroup END
-endif
-"==========================================================================
+" """"""""""""""""""""""""""
+" " 插入系统日期
+" """"""""""""""""""""""""""
+" map <F5> :r !date +\%c<CR>
+" " 函数，修改文件头部的最后修改时间，就象这个文件的头部一样
+" function! LastMod()
+"   if line("$") > 10
+"     let l = 10
+"   else
+"     let l = line("$")
+"   endif
+"   exe "1," . l . "s/[Ll]ast [Mm]odified: .*/Last modified: " . strftime("%c") . " [" . hostname() . "]/e"
+" endfunction
+" 
+" " 手工更新文件最后修改时间
+" map ,L :call LastMod()<CR>
+" 
+" " Edit "Last modified"-comment in the top 5 lines of config files
+" " 自动更新文件修改时间
+" if has("autocmd")
+"   augroup lastmod
+"     autocmd!
+"     autocmd BufWritePre,FileWritePre * exec("normal ms")|call LastMod()|exec("normal `s")
+"   augroup END
+" endif
+" "==========================================================================
 """"""""""""""""""""""""""""""
 "以下设置代码折叠
 """"""""""""""""""""""""""""""
@@ -140,6 +178,7 @@ let Tlist_Ctags_Cmd = '/usr/bin/ctags'
 let Tlist_Show_One_File = 1     "不同时显示多个文件的tag，只显示当前文件的
 let Tlist_Exit_OnlyWindow = 1   "如果taglist窗口是最后一个窗口，则退出vim
 let Tlist_Use_Right_Window = 1  "在右侧窗口中显示taglist窗口 
+let Tlist_WinWidth=20
 "=========================================================================
 """"""""""""""""""""""""""""""
 " netrw setting
@@ -163,6 +202,7 @@ nmap <silent> <leader>wm :WMToggle<cr>
 """"""""""""""""""""""""""""""
 set cscopequickfix=s-,c-,d-,i-,t-,e-
 "=========================================================================
+"=========================================================================
 """"""""""""""""""""""""""""""
 " BufExplorer
 """"""""""""""""""""""""""""""
@@ -178,9 +218,12 @@ autocmd BufWinEnter \[Buf\ List\] setl nonumber
 """"""""""""""""""""""""""""""
 " 自动补全
 """"""""""""""""""""""""""""""
+" 关闭兼容模式
+set nocp
 filetype plugin indent on 
-set nocp " 关闭兼容模式
 filetype plugin on
+filetype on
+" 取消补全内容以分割子窗口形式出现，只显示补全列表
 set completeopt=longest,menu
 " mapping
 inoremap <expr> <CR>       pumvisible()?"\<C-Y>":"\<CR>"
@@ -195,11 +238,79 @@ inoremap <C-L>             <C-X><C-L>
 """"""""""""""""""""""""""""""
 " SuperTab
 """"""""""""""""""""""""""""""
-let g:SuperTabRetainCompletionType=1
-let g:SuperTabDefaultCompletionType="<C-X><C-O>"
+"cs add $curpwd/cscope.out $curpwd/
+let g:SuperTabRetainCompletionType=2
+" let g:SuperTabDefaultCompletionType="<C-X><C-O>"
+let g:SuperTabDefaultCompletionType="<C-X><C-N>"
 "=========================================================================
 """"""""""""""""""""""""""""""
 " NeoComplCache 未设置完成
 """"""""""""""""""""""""""""""
 "let g:NeoComplCache_EnableAtStartup = 1
 "=========================================================================
+
+colorscheme desert 
+" colorscheme rainbow_neon 
+" colorscheme freya
+" colorscheme blackdust
+
+" <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+" >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+" >>>>插件相关配置
+
+" 使用NERDTree插件查看工程文件。设置快捷键，速记：file list
+nmap <Leader>fl :NERDTreeToggle<CR>
+" 设置NERDTree子窗口宽度
+let NERDTreeWinSize=18
+" 设置NERDTree子窗口位置
+let NERDTreeWinPos="right"
+
+" 设置tagbar子窗口的位置出现在主编辑区的左边
+"let tagbar_left=1
+" 设置显示／隐藏标签列表子窗口的快捷键。速记：tag list
+"nnoremap <Leader>tl :TagbarToggle<CR>
+" 设置标签子窗口的宽度
+"let tagbar_width=20
+
+" 定义快捷键 打开/关闭 tag list
+nmap tl :TlistToggle<CR>
+let Tlist_Auto_Open=0
+
+nmap <C-_>s :cs find s <C-R>=expand("<cword>")<CR><CR>
+nmap <C-_>g :cs find g <C-R>=expand("<cword>")<CR><CR>
+nmap <C-_>c :cs find c <C-R>=expand("<cword>")<CR><CR>
+nmap <C-_>t :cs find t <C-R>=expand("<cword>")<CR><CR>
+nmap <C-_>e :cs find e <C-R>=expand("<cword>")<CR><CR>
+nmap <C-_>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
+nmap <C-_>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+nmap <C-_>d :cs find d <C-R>=expand("<cword>")<CR><CR>
+
+" VIM支持多种文本折叠方式，我VIM多用于编码，所以选择符合编程语言语法的代码折叠方式。
+set foldmethod=syntax
+" 启动vim时打开所有折叠代码。
+set nofen
+
+"F3全工程内搜索匹配字符串
+"nnoremap <silent> <F3> :Grep<CR>
+
+"nnoremap <silent> <F3> :A<CR>
+let cwd=""
+set tags=tags
+set tags+=/data/home/waynezheng/.vim/systags
+set tags+=/usr/local/taf/include/TAGS
+set tags+=/data/home/waynezheng/Server/tags
+cs add /data/home/waynezheng/.vim/cscope.out 
+cs add /data/home/waynezheng/cscope/GameCenter_dev/cscope.out /home/waynezheng/GameCenter_dev
+
+let g:miniBufExplMapWindowNavArrows = 1
+"允许光标在任何位置时用CTRL-TAB遍历buffer
+let g:miniBufExplMapCTabSwitchBufs = 1
+
+" 重新打开文档时光标回到文档关闭前的位置
+if has("autocmd")
+    autocmd BufReadPost *
+                \ if line("'\"") > 0 && line ("'\"") <= line("$") |
+                \ exe "normal g'\"" |
+                \ endif
+endif
+
